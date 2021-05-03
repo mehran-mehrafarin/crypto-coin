@@ -5,8 +5,8 @@ import com.gamesys.crypto_coin.client.web.model.asset.AssetClientModel;
 import com.gamesys.crypto_coin.client.web.rest.AssetClientRest;
 import com.gamesys.crypto_coin.entity.Asset;
 import com.gamesys.crypto_coin.repository.AssetRepository;
-import com.gamesys.crypto_coin.web.model.ResponseModel;
-import com.gamesys.crypto_coin.web.model.TemplateResponseModel;
+import com.gamesys.crypto_coin.web.model.response.ResponseModel;
+import com.gamesys.crypto_coin.web.model.response.TemplateResponseModel;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ public class AssetClientServiceImpl implements AssetClientService {
     }
 
     @Override
+    @Transactional
     public ResponseModel update() {
 
         String apiKey = environment.getProperty("coin.api.api.key");

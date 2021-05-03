@@ -6,6 +6,7 @@ import com.gamesys.crypto_coin.repository.row_mapper.AssetRowMapper;
 import com.gamesys.crypto_coin.repository.statement_setter.AssetBatchStatementSetter;
 import com.gamesys.crypto_coin.repository.statement_setter.AssetStatementSetter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -37,12 +38,30 @@ public class AssetRepositoryImpl implements AssetRepository {
     }
 
     @Override
+    public List<Asset> findAll(Pageable pageable) {
+
+        return jdbcTemplate.query(String.format("SELECT * FROM x_asset LIMIT %s OFFSET %s", pageable.getPageSize(), pageable.getOffset()), new AssetRowMapper());
+
+    }
+
+    @Override
     public Optional<Asset> findById(Long id) {
+
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM x_asset WHERE id = ?", new Object[]{id}, Integer.class);
+        if (count == null || count == 0)
+            return Optional.empty();
+
         return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM x_asset WHERE id = ?", new Object[]{id}, new AssetRowMapper()));
+
     }
 
     @Override
     public Optional<Asset> findByAssetId(String assetId) {
+
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM x_asset WHERE asset_id = ?", new Object[]{assetId}, Integer.class);
+        if (count == null || count == 0)
+            return Optional.empty();
+
         return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM x_asset WHERE asset_id = ?", new Object[]{assetId}, new AssetRowMapper()));
     }
 
